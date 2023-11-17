@@ -1,14 +1,17 @@
 package main
 
 import (
+	"time"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-type Product struct {
+type User struct {
 	gorm.Model
-	Code  string
-	Price uint
+	Name     string
+	Age      int
+	Birthday time.Time
 }
 
 func main() {
@@ -18,24 +21,30 @@ func main() {
 		panic("failed to connect database")
 	}
 	db = db.Debug()
-	// Migrate the schema
-	db.AutoMigrate(&Product{})
+	db.AutoMigrate(&User{})
+	users := []User{
+		User{Name: "zhangsan", Age: 18, Birthday: time.Now()},
+		User{
+			Name:     "libai",
+			Age:      30,
+			Birthday: time.Time{},
+		}}
+	err = db.Create(&users).Error
+	user := User{
+		Name:     "admin",
+		Age:      10,
+		Birthday: time.Time{},
+	}
+	// todo 通过数据的指针来创建
+	err = db.Create(&user).Error // 通过数据的指针来创建
+	if err != nil {
+		println(err)
+	}
+	db.Select("Name", "Age", "CreatedAt").Create(&user)
+	// omit 忽略
+	//db.Omit("Name", "Age", "CreatedAt").Create(&user)
 
-	// Create
-	//db.Create(&Product{Code: "D42", Price: 100})
-
-	// Read
-	var product Product
-	//db.First(&product, 2) // find product with integer primary key
-	//db.First(&product, "code = ?", "D42") // find product with code D42
-	//
-	//// Update - update product's price to 200
-	//db.Model(&product).Update("Price", 200)
-	//// Update - update multiple fields
-	//db.Model(&product).Updates(Product{Price: 200, Code: "F42"}) // non-zero fields
-	//db.Model(&product).Updates(map[string]interface{}{"Price": 200, "Code": "F42"})
-
-	// Delete - delete product
-	//db.Delete(&product, 1)
-	db.Delete(&product, "code = ?", "D42")
+	first := db.Limit(1).Find(&user)
+	println(first)
+	db.First(&user, 10)
 }
