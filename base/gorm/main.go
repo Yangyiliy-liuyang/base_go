@@ -13,10 +13,18 @@ type User struct {
 	Age      int
 	Birthday time.Time
 }
+type AdminUsers struct {
+	Admin bool
+}
+
+// 表名映射 但是不是动态的
+func (u User) TableName() string {
+	return "sss"
+}
 
 func main() {
 	dsn := "root:1234@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	var db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -68,5 +76,10 @@ func main() {
 	db.Where("age", 12).Find(&user)
 	db.Model(&User{}).Where("age", 0).Update("age", 13)
 	db.Where("id", 0).Delete(&User{})
-
+	//指定数据库表名
+	err = db.AutoMigrate(&AdminUsers{})
+	if err != nil {
+		return
+	}
+	db.Table("admin_users").Create(&AdminUsers{Admin: true})
 }
