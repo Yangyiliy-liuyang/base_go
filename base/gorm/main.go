@@ -82,4 +82,22 @@ func main() {
 		return
 	}
 	db.Table("admin_users").Create(&AdminUsers{Admin: true})
+
+	//会话 事务
+	err = db.Session(&gorm.Session{}).Transaction(func(*gorm.DB) error {
+		return nil
+	})
+	if err != nil {
+		return
+	}
+	//钩子
+	//// 开始事务
+	//BeforeSave
+	//BeforeCreate
+	//// 关联前的 save
+	//// 插入记录至 db
+	//// 关联后的 save
+	//AfterCreate
+	//AfterSave
+	//// 提交或回滚事务
 }
