@@ -83,6 +83,15 @@ func main() {
 	//}
 	//db.Table("admin_users").Create(&AdminUsers{Admin: true})
 
+	//Save保存所有字段，用于单个记录的全字段更新
+	db.Order("id desc").Limit(2).Offset(3).Find(&User{})
+	type Result struct {
+		Name string
+		Age  int
+	}
+	var result Result
+	db.Table("users").Select("name", "age").Where("name = ?", "Antonio").Scan(&result)
+
 	//会话 事务
 	err = db.Session(&gorm.Session{}).Transaction(func(*gorm.DB) error {
 		return nil
@@ -111,8 +120,12 @@ func main() {
 	if err != nil {
 		println(err)
 	}
+	//原生sql语句不执行钩子函数
+	sql := "insert into......."
+	db.Raw(sql, "")
 }
 
+// 数据模型
 type Good struct {
 	Id   int
 	Name string
