@@ -1,5 +1,7 @@
 package main
 
+import "go_demo/base/syntax"
+
 func case1() int {
 	println("eval case1 expr")
 	return 1
@@ -35,4 +37,5 @@ func main() {
 	default:
 		println("exec default")
 	}
+	syntax.Components()
 }
