@@ -22,8 +22,8 @@ func Components() {
 	outer.Inner.Run()
 	//匿名字段可以
 
-	var ErrouterPtr OuterPtr
-	ErrouterPtr.Run() //panic: runtime error: invalid memory address or nil pointer dereference
+	//	var ErrouterPtr OuterPtr
+	//	ErrouterPtr.Run() //panic: runtime error: invalid memory address or nil pointer dereference
 	// 正确写法
 	outerPtr := OuterPtr{
 		Inner: &Inner{},

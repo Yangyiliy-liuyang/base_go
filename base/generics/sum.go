@@ -1,6 +1,9 @@
 package generics
 
-import "io"
+import (
+	"fmt"
+	"io"
+)
 
 // T :形参的类型，类型
 // Number/any  :形参的约束
@@ -13,6 +16,7 @@ func Sum[T Number](vals []T) T {
 	}
 	return res
 }
+
 func Max[T Number](vals []T) T {
 	t := vals[0]
 	for i := 0; i < len(vals); i++ {
@@ -22,6 +26,7 @@ func Max[T Number](vals []T) T {
 	}
 	return t
 }
+
 func Min[T Number](vals []T) T {
 	t := vals[0]
 	for i := 0; i < len(vals); i++ {
@@ -33,14 +38,23 @@ func Min[T Number](vals []T) T {
 }
 
 // 过滤查找
-func Find[T any](vals []T, filter func(t T) bool) T {
+func Find[T any](vals []T, filter func(t T) bool) []T {
+	var result []T
 	for _, v := range vals {
 		if filter(v) {
-			return v
+			result = append(result, v)
 		}
 	}
-	var t T
-	return t
+	return result
+}
+func TryFindAll() {
+	// 查找年龄大于等于 30 的人
+	filter := func(v int) bool {
+		return v >= 30
+	}
+
+	result := Find([]int{1, 12, 32, 30, 112}, filter)
+	fmt.Println(result) // 输出: {32, 30, 112}
 }
 
 func Insert[T any](idx int, val T, vals []T) []T {

@@ -1,6 +1,9 @@
 package main
 
-import "go_demo/base/syntax"
+import (
+	"go_demo/base/generics"
+	"go_demo/base/syntax"
+)
 
 func case1() int {
 	println("eval case1 expr")
@@ -38,4 +41,5 @@ func main() {
 		println("exec default")
 	}
 	syntax.Components()
+	generics.TryFindAll()
 }
